@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('name', 45);
             $table->text('goals')->nullable();
             // Тип оценки: баллы, зачет/незачет или проценты
-            $table->enum('evaluation_type', ['balles', 'i/ni', 'procenti']);
+            $table->enum('evaluation_type', ['balles', 'i/ni', 'procenti'])->nullable();
             $table->timestamps();
         });
 
@@ -55,7 +55,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('group_id')->constrained();
             $table->foreignId('internship_id')->constrained();
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('company_id')->nullable()->constrained();
             $table->timestamp('approved_at')->nullable(); // Дата одобрения
             $table->text('motivation_letter'); // То самое письмо
             $table->enum('status', ['pending', 'approved', 'rejected', 'terminated'])->default('pending');
@@ -68,7 +68,7 @@ return new class extends Migration
             $table->foreignId('application_id')->constrained()->onDelete('cascade');
             $table->date('date');
             $table->text('comment')->nullable();
-            $table->string('grade', 10); // Сама оценка (строка, чтобы влезло и "10", и "i")
+            $table->string('grade', 10)->nullable(); // Сама оценка (строка, чтобы влезло и "10", и "i")
             $table->timestamps();
         });
     }
@@ -78,6 +78,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('internship_tables');
+        Schema::dropIfExists('evaluations');
+        Schema::dropIfExists('applications');
+        Schema::dropIfExists('group_internships');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('internships');
+        Schema::dropIfExists('companies');
+        Schema::dropIfExists('groups');
     }
 };
